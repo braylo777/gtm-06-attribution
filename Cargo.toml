@@ -1,0 +1,23 @@
+[package]
+name = "gtm-06-attribution"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "Prove which spend makes revenue: five attribution models on the same journeys with ROAS per channel, funnel leakage priced in dollars against benchmarks, and cohort retention triangles."
+repository = "https://github.com/braylo777/gtm-06-attribution"
+
+[lib]
+crate-type = ["rlib", "cdylib"]
+
+[[bin]]
+name = "gtm-06-attribution"
+path = "src/main.rs"
+
+[dependencies]
+serde_json = "=1.0.154"
+
+[profile.release]
+opt-level = "s"
+lto = true
+panic = "abort"
+codegen-units = 1

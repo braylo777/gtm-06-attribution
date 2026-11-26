@@ -1,0 +1,834 @@
+{
+ "stage": 6,
+ "repo": "gtm-06-attribution",
+ "title": "Multi-Touch Attribution & RevOps",
+ "tagline": "Prove which spend makes revenue: five attribution models on the same journeys with ROAS per channel, funnel leakage priced in dollars against benchmarks, and cohort retention triangles.",
+ "why": "Every budget meeting asks the same question: what is working? Last-touch gives all credit to the final email; first-touch gives it all to the first ad. The honest answer is a range. Show the range across models, and the CFO sees where the model choice changes the decision. Then price the funnel leaks and the retention curve in dollars, because that is the language the decision is made in.",
+ "covers": [
+  "First-touch, last-touch, linear, time-decay (half-life) and U-shaped 40/20/40 models; each gives out exactly 100% of value",
+  "Touches after the conversion day are ignored; open opportunities are skipped",
+  "Per-channel revenue, share and ROAS per model, plus each channel's share range across models",
+  "Funnel: stage-to-stage rate, benchmark gap, extra wins at benchmark (carried through later stages), revenue gap, biggest leak",
+  "Cohorts: logo and revenue retention triangles by signup month, size-weighted average curve"
+ ],
+ "gaps": [
+  "No data-driven (Shapley / Markov) model yet: the five rule-based models are the baseline",
+  "No SQL engine: inputs are pre-joined journeys and stage counts as JSON (the SQL that builds them lives in the warehouse)",
+  "No significance testing on funnel differences"
+ ],
+ "ops": [
+  {
+   "op": "attribute",
+   "label": "Attribution models",
+   "help": "Credit 24 synthetic B2B opportunities to channels with 5 models. Compare each channel's share range.",
+   "input": {
+    "half_life_days": 7,
+    "spend": {
+     "paid_search": 42000,
+     "linkedin_ads": 55000,
+     "webinar": 18000,
+     "organic_seo": 15000,
+     "outbound_email": 30000,
+     "partner_referral": 8000
+    },
+    "journeys": [
+     {
+      "journey": "opp_00",
+      "value": 24000,
+      "converted_day": 39,
+      "touches": [
+       {
+        "channel": "organic_seo",
+        "day": 5
+       },
+       {
+        "channel": "outbound_email",
+        "day": 7
+       },
+       {
+        "channel": "organic_seo",
+        "day": 14
+       },
+       {
+        "channel": "partner_referral",
+        "day": 21
+       },
+       {
+        "channel": "outbound_email",
+        "day": 36
+       }
+      ]
+     },
+     {
+      "journey": "opp_01",
+      "value": 24000,
+      "converted_day": 74,
+      "touches": [
+       {
+        "channel": "paid_search",
+        "day": 60
+       },
+       {
+        "channel": "linkedin_ads",
+        "day": 69
+       }
+      ]
+     },
+     {
+      "journey": "opp_02",
+      "value": 24000,
+      "converted_day": 32,
+      "touches": [
+       {
+        "channel": "linkedin_ads",
+        "day": 10
+       },
+       {
+        "channel": "organic_seo",
+        "day": 26
+       },
+       {
+        "channel": "partner_referral",
+        "day": 28
+       },
+       {
+        "channel": "paid_search",
+        "day": 31
+       },
+       {
+        "channel": "linkedin_ads",
+        "day": 32
+       }
+      ]
+     },
+     {
+      "journey": "opp_03",
+      "value": 36000,
+      "converted_day": 55,
+      "touches": [
+       {
+        "channel": "organic_seo",
+        "day": 49
+       }
+      ]
+     },
+     {
+      "journey": "opp_04",
+      "value": 12000,
+      "converted_day": 78,
+      "touches": [
+       {
+        "channel": "organic_seo",
+        "day": 68
+       },
+       {
+        "channel": "outbound_email",
+        "day": 73
+       }
+      ]
+     },
+     {
+      "journey": "opp_05",
+      "value": 12000,
+      "converted_day": 57,
+      "touches": [
+       {
+        "channel": "linkedin_ads",
+        "day": 34
+       },
+       {
+        "channel": "outbound_email",
+        "day": 42
+       },
+       {
+        "channel": "outbound_email",
+        "day": 53
+       }
+      ]
+     },
+     {
+      "journey": "opp_06",
+      "value": 18000,
+      "converted_day": 55,
+      "touches": [
+       {
+        "channel": "paid_search",
+        "day": 31
+       },
+       {
+        "channel": "linkedin_ads",
+        "day": 43
+       },
+       {
+        "channel": "outbound_email",
+        "day": 49
+       }
+      ]
+     },
+     {
+      "journey": "opp_07",
+      "value": 24000,
+      "converted_day": 44,
+      "touches": [
+       {
+        "channel": "organic_seo",
+        "day": 22
+       },
+       {
+        "channel": "partner_referral",
+        "day": 42
+       }
+      ]
+     },
+     {
+      "journey": "opp_08",
+      "value": 36000,
+      "converted_day": 76,
+      "touches": [
+       {
+        "channel": "linkedin_ads",
+        "day": 41
+       },
+       {
+        "channel": "paid_search",
+        "day": 51
+       },
+       {
+        "channel": "linkedin_ads",
+        "day": 57
+       },
+       {
+        "channel": "organic_seo",
+        "day": 76
+       }
+      ]
+     },
+     {
+      "journey": "opp_09",
+      "value": 36000,
+      "converted_day": 57,
+      "touches": [
+       {
+        "channel": "linkedin_ads",
+        "day": 20
+       },
+       {
+        "channel": "organic_seo",
+        "day": 43
+       },
+       {
+        "channel": "paid_search",
+        "day": 53
+       },
+       {
+        "channel": "webinar",
+        "day": 57
+       }
+      ]
+     },
+     {
+      "journey": "opp_10",
+      "value": 24000,
+      "converted_day": 52,
+      "touches": [
+       {
+        "channel": "organic_seo",
+        "day": 45
+       },
+       {
+        "channel": "outbound_email",
+        "day": 48
+       }
+      ]
+     },
+     {
+      "journey": "opp_11",
+      "value": 36000,
+      "converted_day": 48,
+      "touches": [
+       {
+        "channel": "linkedin_ads",
+        "day": 28
+       },
+       {
+        "channel": "outbound_email",
+        "day": 40
+       },
+       {
+        "channel": "webinar",
+        "day": 44
+       }
+      ]
+     },
+     {
+      "journey": "opp_12",
+      "value": 24000,
+      "converted_day": 61,
+      "touches": [
+       {
+        "channel": "paid_search",
+        "day": 47
+       },
+       {
+        "channel": "partner_referral",
+        "day": 48
+       },
+       {
+        "channel": "organic_seo",
+        "day": 55
+       },
+       {
+        "channel": "webinar",
+        "day": 59
+       }
+      ]
+     },
+     {
+      "journey": "opp_13",
+      "value": 36000,
+      "converted_day": 88,
+      "touches": [
+       {
+        "channel": "organic_seo",
+        "day": 63
+       },
+       {
+        "channel": "webinar",
+        "day": 83
+       }
+      ]
+     },
+     {
+      "journey": "opp_14",
+      "value": 18000,
+      "converted_day": 53,
+      "touches": [
+       {
+        "channel": "organic_seo",
+        "day": 18
+       },
+       {
+        "channel": "organic_seo",
+        "day": 53
+       }
+      ]
+     },
+     {
+      "journey": "opp_15",
+      "value": 12000,
+      "converted_day": 82,
+      "touches": [
+       {
+        "channel": "paid_search",
+        "day": 43
+       },
+       {
+        "channel": "linkedin_ads",
+        "day": 59
+       },
+       {
+        "channel": "linkedin_ads",
+        "day": 67
+       },
+       {
+        "channel": "webinar",
+        "day": 73
+       },
+       {
+        "channel": "webinar",
+        "day": 79
+       }
+      ]
+     },
+     {
+      "journey": "opp_16",
+      "value": 18000,
+      "converted_day": 29,
+      "touches": [
+       {
+        "channel": "organic_seo",
+        "day": 15
+       },
+       {
+        "channel": "webinar",
+        "day": 29
+       }
+      ]
+     },
+     {
+      "journey": "opp_17",
+      "value": 12000,
+      "converted_day": 13,
+      "touches": [
+       {
+        "channel": "outbound_email",
+        "day": 8
+       }
+      ]
+     },
+     {
+      "journey": "opp_18",
+      "value": 18000,
+      "converted_day": 54,
+      "touches": [
+       {
+        "channel": "organic_seo",
+        "day": 13
+       },
+       {
+        "channel": "organic_seo",
+        "day": 18
+       },
+       {
+        "channel": "organic_seo",
+        "day": 24
+       },
+       {
+        "channel": "partner_referral",
+        "day": 47
+       },
+       {
+        "channel": "paid_search",
+        "day": 48
+       }
+      ]
+     },
+     {
+      "journey": "opp_19",
+      "value": 24000,
+      "converted_day": 60,
+      "touches": [
+       {
+        "channel": "linkedin_ads",
+        "day": 56
+       },
+       {
+        "channel": "outbound_email",
+        "day": 58
+       }
+      ]
+     },
+     {
+      "journey": "opp_20",
+      "value": 36000,
+      "converted_day": 58,
+      "touches": [
+       {
+        "channel": "linkedin_ads",
+        "day": 25
+       },
+       {
+        "channel": "webinar",
+        "day": 28
+       },
+       {
+        "channel": "webinar",
+        "day": 55
+       }
+      ]
+     },
+     {
+      "journey": "opp_21",
+      "value": 18000,
+      "converted_day": 42,
+      "touches": [
+       {
+        "channel": "organic_seo",
+        "day": 7
+       },
+       {
+        "channel": "linkedin_ads",
+        "day": 17
+       },
+       {
+        "channel": "outbound_email",
+        "day": 40
+       }
+      ]
+     },
+     {
+      "journey": "opp_22",
+      "value": 36000,
+      "converted_day": 50,
+      "touches": [
+       {
+        "channel": "linkedin_ads",
+        "day": 5
+       },
+       {
+        "channel": "webinar",
+        "day": 15
+       },
+       {
+        "channel": "outbound_email",
+        "day": 46
+       }
+      ]
+     },
+     {
+      "journey": "opp_23",
+      "value": 18000,
+      "converted_day": 73,
+      "touches": [
+       {
+        "channel": "paid_search",
+        "day": 60
+       },
+       {
+        "channel": "outbound_email",
+        "day": 69
+       }
+      ]
+     },
+     {
+      "journey": "open_opp",
+      "value": 0,
+      "touches": [
+       {
+        "channel": "paid_search",
+        "day": 50
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "op": "funnel_leakage",
+   "label": "Funnel leakage",
+   "help": "Find the funnel step that costs the most revenue against benchmark conversion rates.",
+   "input": {
+    "avg_deal_value": 24000,
+    "stages": [
+     {
+      "name": "Visitor",
+      "count": 48000
+     },
+     {
+      "name": "Signup",
+      "count": 1440,
+      "benchmark_rate": 0.035
+     },
+     {
+      "name": "Activated",
+      "count": 500,
+      "benchmark_rate": 0.4
+     },
+     {
+      "name": "PQL",
+      "count": 150,
+      "benchmark_rate": 0.25
+     },
+     {
+      "name": "Opportunity",
+      "count": 60,
+      "benchmark_rate": 0.45
+     },
+     {
+      "name": "Closed won",
+      "count": 15,
+      "benchmark_rate": 0.25
+     }
+    ]
+   }
+  },
+  {
+   "op": "cohort_retention",
+   "label": "Cohort retention",
+   "help": "Logo and revenue retention by signup month. Revenue retention can pass 100% when customers expand.",
+   "input": {
+    "current_month": 5,
+    "customers": [
+     {
+      "customer": "c00",
+      "signup_month": 0,
+      "mrr_by_month": [
+       800,
+       800,
+       800,
+       800,
+       800,
+       800
+      ]
+     },
+     {
+      "customer": "c01",
+      "signup_month": 0,
+      "mrr_by_month": [
+       800,
+       800,
+       800,
+       800,
+       800,
+       800
+      ]
+     },
+     {
+      "customer": "c02",
+      "signup_month": 0,
+      "mrr_by_month": [
+       800,
+       800,
+       0,
+       0,
+       0,
+       0
+      ]
+     },
+     {
+      "customer": "c03",
+      "signup_month": 0,
+      "mrr_by_month": [
+       2000,
+       2000,
+       0,
+       0,
+       0,
+       0
+      ]
+     },
+     {
+      "customer": "c04",
+      "signup_month": 0,
+      "mrr_by_month": [
+       800,
+       800,
+       800,
+       800,
+       800,
+       800
+      ]
+     },
+     {
+      "customer": "c10",
+      "signup_month": 1,
+      "mrr_by_month": [
+       800,
+       800,
+       800,
+       0,
+       0
+      ]
+     },
+     {
+      "customer": "c11",
+      "signup_month": 1,
+      "mrr_by_month": [
+       2000,
+       2000,
+       2000,
+       2000,
+       2000
+      ]
+     },
+     {
+      "customer": "c12",
+      "signup_month": 1,
+      "mrr_by_month": [
+       1200,
+       1200,
+       0,
+       0,
+       0
+      ]
+     },
+     {
+      "customer": "c13",
+      "signup_month": 1,
+      "mrr_by_month": [
+       1200,
+       1200,
+       0,
+       0,
+       0
+      ]
+     },
+     {
+      "customer": "c14",
+      "signup_month": 1,
+      "mrr_by_month": [
+       2000,
+       2000,
+       2000,
+       2500,
+       0
+      ]
+     },
+     {
+      "customer": "c20",
+      "signup_month": 2,
+      "mrr_by_month": [
+       2000,
+       2000,
+       2000,
+       2000
+      ]
+     },
+     {
+      "customer": "c21",
+      "signup_month": 2,
+      "mrr_by_month": [
+       800,
+       800,
+       800,
+       800
+      ]
+     },
+     {
+      "customer": "c22",
+      "signup_month": 2,
+      "mrr_by_month": [
+       800,
+       800,
+       0,
+       0
+      ]
+     },
+     {
+      "customer": "c23",
+      "signup_month": 2,
+      "mrr_by_month": [
+       1200,
+       1200,
+       1200,
+       1200
+      ]
+     },
+     {
+      "customer": "c30",
+      "signup_month": 3,
+      "mrr_by_month": [
+       1200,
+       1200,
+       1200
+      ]
+     },
+     {
+      "customer": "c31",
+      "signup_month": 3,
+      "mrr_by_month": [
+       500,
+       500,
+       500
+      ]
+     },
+     {
+      "customer": "c32",
+      "signup_month": 3,
+      "mrr_by_month": [
+       1200,
+       1200,
+       1200
+      ]
+     },
+     {
+      "customer": "c33",
+      "signup_month": 3,
+      "mrr_by_month": [
+       500,
+       500,
+       0
+      ]
+     },
+     {
+      "customer": "c40",
+      "signup_month": 4,
+      "mrr_by_month": [
+       500,
+       500
+      ]
+     },
+     {
+      "customer": "c41",
+      "signup_month": 4,
+      "mrr_by_month": [
+       2000,
+       2000
+      ]
+     },
+     {
+      "customer": "c42",
+      "signup_month": 4,
+      "mrr_by_month": [
+       500,
+       500
+      ]
+     },
+     {
+      "customer": "c43",
+      "signup_month": 4,
+      "mrr_by_month": [
+       1200,
+       1200
+      ]
+     },
+     {
+      "customer": "c44",
+      "signup_month": 4,
+      "mrr_by_month": [
+       800,
+       800
+      ]
+     },
+     {
+      "customer": "c45",
+      "signup_month": 4,
+      "mrr_by_month": [
+       800,
+       800
+      ]
+     },
+     {
+      "customer": "c50",
+      "signup_month": 5,
+      "mrr_by_month": [
+       2000
+      ]
+     },
+     {
+      "customer": "c51",
+      "signup_month": 5,
+      "mrr_by_month": [
+       2000
+      ]
+     },
+     {
+      "customer": "c52",
+      "signup_month": 5,
+      "mrr_by_month": [
+       1200
+      ]
+     },
+     {
+      "customer": "c53",
+      "signup_month": 5,
+      "mrr_by_month": [
+       1200
+      ]
+     },
+     {
+      "customer": "c54",
+      "signup_month": 5,
+      "mrr_by_month": [
+       800
+      ]
+     },
+     {
+      "customer": "c55",
+      "signup_month": 5,
+      "mrr_by_month": [
+       1200
+      ]
+     },
+     {
+      "customer": "c56",
+      "signup_month": 5,
+      "mrr_by_month": [
+       500
+      ]
+     }
+    ]
+   }
+  }
+ ]
+}
